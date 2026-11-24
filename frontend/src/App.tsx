@@ -1,12 +1,15 @@
 import useRole from './hooks/useRole';
 import AppRoutes from './routes/routes';
 import type { RouteAccessRule } from './routes/routes';
+import { BookingProvider } from './state/BookingContext';
 import { RoleProvider } from './state/RoleContext';
 
 function App() {
   return (
     <RoleProvider>
-      <RoleAwareRoutes />
+      <BookingProvider>
+        <RoleAwareRoutes />
+      </BookingProvider>
     </RoleProvider>
   );
 }
