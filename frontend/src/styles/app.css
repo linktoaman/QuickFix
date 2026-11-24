@@ -296,6 +296,21 @@ h1 {
   color: #5d7287;
 }
 
+.service-card__link {
+  grid-column: 2;
+  justify-self: start;
+  margin-top: 0.3rem;
+  color: #0d47a1;
+  font-size: 0.92rem;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.service-card__link:hover,
+.service-card__link:focus-visible {
+  text-decoration: underline;
+}
+
 .page-panel {
   width: min(760px, 100%);
   margin: 0 auto;
@@ -305,6 +320,119 @@ h1 {
 .page-panel h1 {
   margin: 0.35rem 0 1rem;
   font-size: clamp(2rem, 3rem, 3rem);
+}
+
+.booking-page {
+  display: grid;
+  gap: clamp(1.5rem, 4vw, 2.5rem);
+  width: min(1120px, 100%);
+  margin: 0 auto;
+}
+
+.booking-page__hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(17rem, 0.9fr);
+  gap: clamp(1.25rem, 4vw, 2rem);
+  align-items: start;
+}
+
+.booking-page__copy {
+  display: grid;
+  gap: 1rem;
+}
+
+.booking-page__copy p:not(.eyebrow) {
+  max-width: 42rem;
+  margin-bottom: 0;
+  color: #476179;
+  font-size: 1.08rem;
+}
+
+.booking-page__copy h1 {
+  font-size: clamp(2.35rem, 5vw, 4rem);
+}
+
+.booking-page__services,
+.booking-page__form-panel {
+  border: 1px solid #dce8f8;
+  border-radius: 8px;
+  background: #ffffff;
+  box-shadow: 0 18px 50px rgba(23, 105, 224, 0.08);
+}
+
+.booking-page__services {
+  display: grid;
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.booking-page__services h2 {
+  margin-bottom: 0;
+  color: #0f2a43;
+  font-size: 1.15rem;
+}
+
+.booking-page__service-list {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.booking-service-link {
+  display: grid;
+  gap: 0.25rem;
+  padding: 0.85rem;
+  border: 1px solid #dce8f8;
+  border-radius: 8px;
+  color: #14213d;
+  background: #ffffff;
+  text-decoration: none;
+}
+
+.booking-service-link:hover,
+.booking-service-link:focus-visible,
+.booking-service-link--selected {
+  border-color: #86bdff;
+  background: #eaf4ff;
+  outline: none;
+}
+
+.booking-service-link span {
+  color: #0f2a43;
+  font-weight: 800;
+}
+
+.booking-service-link small {
+  color: #5d7287;
+  font-size: 0.86rem;
+}
+
+.booking-page__form-panel {
+  display: grid;
+  gap: 1rem;
+  padding: clamp(1rem, 4vw, 2rem);
+}
+
+.booking-page__preselected {
+  margin: 0;
+  color: #0d5fba;
+  font-weight: 800;
+}
+
+.booking-form {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.booking-form__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.booking-form__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
 }
 
 @media (max-width: 760px) {
@@ -335,6 +463,11 @@ h1 {
   }
 
   .hero {
+    grid-template-columns: 1fr;
+  }
+
+  .booking-page__hero,
+  .booking-form__grid {
     grid-template-columns: 1fr;
   }
 }
