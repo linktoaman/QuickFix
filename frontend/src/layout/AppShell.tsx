@@ -9,7 +9,7 @@ function AppShell() {
         Skip to main content
       </a>
       <TopBar />
-      <main id="main-content" tabIndex={-1}>
+      <main className="qf-main" id="main-content" tabIndex={-1}>
         <Outlet />
       </main>
     </div>

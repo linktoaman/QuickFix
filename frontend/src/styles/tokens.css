@@ -1,8 +1,10 @@
 :root {
   --qf-color-surface: #ffffff;
   --qf-color-surface-muted: #f7fbff;
+  --qf-color-surface-raised: #ffffff;
   --qf-color-text: #14213d;
   --qf-color-text-muted: #5d7287;
+  --qf-color-text-subtle: #476179;
   --qf-color-heading: #0f2a43;
   --qf-color-border: #dce8f8;
   --qf-color-border-strong: #b7d8ff;
@@ -52,11 +54,20 @@
   --qf-radius-sm: 6px;
   --qf-radius-md: 8px;
   --qf-border-width: 1px;
+  --qf-page-max-width: 1120px;
+  --qf-page-padding: clamp(1rem, 4vw, 3rem);
   --qf-focus-ring: 0 0 0 3px rgba(23, 105, 224, 0.25);
   --qf-shadow-card: 0 18px 50px rgba(23, 105, 224, 0.08);
+  --qf-shadow-card-hover: 0 20px 54px rgba(23, 105, 224, 0.12);
+  --qf-shadow-topbar: 0 1px 0 rgba(220, 232, 248, 0.84);
 
-  --qf-grid-page: minmax(1rem, 1fr) minmax(0, 1120px) minmax(1rem, 1fr);
+  --qf-grid-page:
+    minmax(var(--qf-space-4), 1fr)
+    minmax(0, var(--qf-page-max-width))
+    minmax(var(--qf-space-4), 1fr);
   --qf-grid-cards: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+  --qf-grid-services: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+  --qf-grid-details: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
 
   --qf-motion-fast: 140ms;
   --qf-motion-base: 180ms;

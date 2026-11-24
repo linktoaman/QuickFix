@@ -10,7 +10,7 @@ function TopBar() {
         <span className="brand-mark" aria-hidden="true">
           QF
         </span>
-        <span>QuickFix</span>
+        <span className="brand-name">QuickFix</span>
       </Link>
       <div className="navigation-container">
         <RoleSelection />

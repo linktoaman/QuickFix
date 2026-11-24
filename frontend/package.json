@@ -9,6 +9,7 @@
     "typecheck": "tsc -b --pretty false",
     "lint": "eslint .",
     "test": "vitest run",
+    "test:usability": "vitest run src/__tests__/accessibility.test.tsx src/__tests__/responsiveSmoke.test.tsx",
     "audit": "npm audit --audit-level=moderate",
     "deps:inventory": "npm ls --all --json",
     "deps:sbom": "npm sbom --json"
