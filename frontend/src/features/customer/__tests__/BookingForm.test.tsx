@@ -4,6 +4,7 @@ import { describe, expect, it, vi } from 'vitest';
 import BookingForm from '../BookingForm';
 import {
   BookingContext,
+  type CancelBookingResult,
   type CreateBookingResult,
 } from '../../../state/bookingContext';
 import type { Booking, BookingFormInput } from '../../../types/booking';
@@ -35,6 +36,10 @@ function renderBookingForm(
         bookings: [],
         storageError: null,
         createBooking,
+        cancelBooking: vi.fn<(_: string, __: string) => CancelBookingResult>(() => ({
+          ok: false,
+          error: 'No booking selected.',
+        })),
         getBookingsForCustomer: vi.fn(() => []),
       }}
     >
