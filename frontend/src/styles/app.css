@@ -74,6 +74,10 @@ select {
 
 .navigation-container {
   display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.75rem;
   min-width: 0;
 }
 
@@ -104,6 +108,56 @@ select {
   flex-wrap: wrap;
   justify-content: flex-end;
   gap: 0.35rem;
+}
+
+.role-selection {
+  display: grid;
+  gap: 0.35rem;
+  min-width: min(100%, 24rem);
+}
+
+.role-selection__fields {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+.role-selection__field {
+  display: grid;
+  gap: 0.2rem;
+  min-width: 11.5rem;
+}
+
+.role-selection__field span {
+  color: #476179;
+  font-size: 0.75rem;
+  font-weight: 800;
+}
+
+.role-selection__field select {
+  min-height: 2.35rem;
+  width: 100%;
+  padding: 0.45rem 0.65rem;
+  border: 1px solid #b7d8ff;
+  border-radius: 8px;
+  color: #0f2a43;
+  background: #ffffff;
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.role-selection__field select:focus-visible {
+  border-color: #1769e0;
+  box-shadow: 0 0 0 3px rgba(23, 105, 224, 0.25);
+  outline: none;
+}
+
+.role-selection__note {
+  margin: 0;
+  color: #5d7287;
+  font-size: 0.75rem;
+  text-align: right;
 }
 
 .topnav a {
@@ -261,6 +315,23 @@ h1 {
 
   .topnav {
     justify-content: flex-start;
+  }
+
+  .navigation-container,
+  .role-selection__fields {
+    justify-content: flex-start;
+  }
+
+  .role-selection {
+    width: 100%;
+  }
+
+  .role-selection__field {
+    min-width: min(100%, 14rem);
+  }
+
+  .role-selection__note {
+    text-align: left;
   }
 
   .hero {
