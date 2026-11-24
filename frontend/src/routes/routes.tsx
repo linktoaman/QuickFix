@@ -1,6 +1,7 @@
 import type { ReactElement } from 'react';
 import { useRoutes, type RouteObject } from 'react-router-dom';
 
+import AdminStats from '../features/admin/AdminStats';
 import BookingPage from '../features/customer/BookingPage';
 import HomePage from '../features/customer/HomePage';
 import MyBookingsPage from '../features/customer/MyBookingsPage';
@@ -92,7 +93,7 @@ function AdminPlaceholder() {
     <section className="page-panel" aria-labelledby="admin-title">
       <p className="eyebrow">Operations workspace</p>
       <h1 id="admin-title">Admin Dashboard</h1>
-      <p>Admin summaries will appear after local booking state is added.</p>
+      <AdminStats />
     </section>
   );
 }
