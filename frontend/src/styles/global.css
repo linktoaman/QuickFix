@@ -1,0 +1,309 @@
+html {
+  color: var(--qf-color-text);
+  background: var(--qf-color-surface);
+  font-family: var(--qf-font-family);
+  font-synthesis: none;
+  line-height: var(--qf-line-height-base);
+  text-rendering: optimizeLegibility;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+a {
+  color: inherit;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+}
+
+:focus {
+  outline: none;
+}
+
+:focus-visible {
+  outline: 3px solid var(--qf-color-blue-300);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 1ms !important;
+  }
+}
+
+.qf-button {
+  display: inline-flex;
+  min-height: 2.75rem;
+  align-items: center;
+  justify-content: center;
+  gap: var(--qf-space-2);
+  padding: 0.7rem var(--qf-space-4);
+  border: var(--qf-border-width) solid transparent;
+  border-radius: var(--qf-radius-md);
+  font-weight: 800;
+  line-height: 1;
+  text-align: center;
+  text-decoration: none;
+  transition:
+    background-color var(--qf-motion-fast) var(--qf-motion-ease),
+    border-color var(--qf-motion-fast) var(--qf-motion-ease),
+    color var(--qf-motion-fast) var(--qf-motion-ease),
+    box-shadow var(--qf-motion-fast) var(--qf-motion-ease);
+}
+
+.qf-button:focus-visible {
+  box-shadow: var(--qf-focus-ring);
+}
+
+.qf-button:disabled {
+  opacity: 0.58;
+}
+
+.qf-button--primary {
+  color: var(--qf-color-surface);
+  background: var(--qf-color-blue-500);
+}
+
+.qf-button--primary:hover:not(:disabled) {
+  background: var(--qf-color-blue-700);
+}
+
+.qf-button--secondary {
+  color: var(--qf-color-blue-700);
+  border-color: var(--qf-color-border-strong);
+  background: var(--qf-color-surface);
+}
+
+.qf-button--secondary:hover:not(:disabled) {
+  background: var(--qf-color-blue-50);
+}
+
+.qf-button--ghost {
+  color: var(--qf-color-blue-700);
+  background: transparent;
+}
+
+.qf-button--ghost:hover:not(:disabled) {
+  background: var(--qf-color-blue-50);
+}
+
+.qf-button--icon {
+  width: 2.75rem;
+  min-width: 2.75rem;
+  padding: 0;
+  color: var(--qf-color-blue-700);
+  border-color: var(--qf-color-border);
+  background: var(--qf-color-surface);
+}
+
+.qf-button--icon:hover:not(:disabled) {
+  background: var(--qf-color-blue-50);
+}
+
+.qf-button--block {
+  width: 100%;
+}
+
+.qf-card {
+  border: var(--qf-border-width) solid var(--qf-color-border);
+  border-radius: var(--qf-radius-md);
+  background: var(--qf-color-surface);
+}
+
+.qf-card:focus-within {
+  box-shadow: var(--qf-focus-ring);
+}
+
+.qf-card--elevated {
+  box-shadow: var(--qf-shadow-card);
+}
+
+.qf-field {
+  display: grid;
+  gap: var(--qf-space-2);
+}
+
+.qf-field__label {
+  display: inline-flex;
+  gap: var(--qf-space-1);
+  align-items: baseline;
+  color: var(--qf-color-heading);
+  font-size: var(--qf-font-size-sm);
+  font-weight: 800;
+}
+
+.qf-field input,
+.qf-field select,
+.qf-field textarea,
+.qf-field-control {
+  width: 100%;
+  min-height: 2.75rem;
+  padding: 0.7rem var(--qf-space-3);
+  border: var(--qf-border-width) solid var(--qf-color-border);
+  border-radius: var(--qf-radius-md);
+  color: var(--qf-color-text);
+  background: var(--qf-color-surface);
+  transition:
+    border-color var(--qf-motion-fast) var(--qf-motion-ease),
+    box-shadow var(--qf-motion-fast) var(--qf-motion-ease);
+}
+
+.qf-field textarea,
+textarea.qf-field-control {
+  min-height: 7rem;
+  resize: vertical;
+}
+
+.qf-field input:focus-visible,
+.qf-field select:focus-visible,
+.qf-field textarea:focus-visible,
+.qf-field-control:focus-visible {
+  border-color: var(--qf-color-blue-500);
+  box-shadow: var(--qf-focus-ring);
+}
+
+.qf-field [aria-invalid="true"],
+.qf-field-control[aria-invalid="true"] {
+  border-color: var(--qf-color-error);
+}
+
+.qf-field__hint,
+.qf-field__error {
+  margin: 0;
+  font-size: var(--qf-font-size-sm);
+}
+
+.qf-field__hint {
+  color: var(--qf-color-text-muted);
+}
+
+.qf-field__error {
+  color: var(--qf-color-error);
+  font-weight: 700;
+}
+
+.qf-message {
+  display: grid;
+  gap: var(--qf-space-1);
+  padding: var(--qf-space-4);
+  border: var(--qf-border-width) solid;
+  border-radius: var(--qf-radius-md);
+}
+
+.qf-message__title,
+.qf-message__content > :last-child {
+  margin-bottom: 0;
+}
+
+.qf-message__title {
+  margin-top: 0;
+  font-weight: 800;
+}
+
+.qf-message--success {
+  color: var(--qf-color-success);
+  border-color: var(--qf-color-success-border);
+  background: var(--qf-color-success-bg);
+}
+
+.qf-message--warning {
+  color: var(--qf-color-warning);
+  border-color: var(--qf-color-warning-border);
+  background: var(--qf-color-warning-bg);
+}
+
+.qf-message--error {
+  color: var(--qf-color-error);
+  border-color: var(--qf-color-error-border);
+  background: var(--qf-color-error-bg);
+}
+
+.qf-message--info {
+  color: var(--qf-color-info);
+  border-color: var(--qf-color-info-border);
+  background: var(--qf-color-info-bg);
+}
+
+.qf-status-badge {
+  display: inline-flex;
+  min-height: 1.75rem;
+  align-items: center;
+  gap: var(--qf-space-2);
+  padding: 0.25rem 0.6rem;
+  border: var(--qf-border-width) solid;
+  border-radius: 999px;
+  font-size: var(--qf-font-size-sm);
+  font-weight: 800;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.qf-status-badge__dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 999px;
+  background: currentColor;
+}
+
+.qf-status-badge--success {
+  color: var(--qf-color-success);
+  border-color: var(--qf-color-success-border);
+  background: var(--qf-color-success-bg);
+}
+
+.qf-status-badge--warning {
+  color: var(--qf-color-warning);
+  border-color: var(--qf-color-warning-border);
+  background: var(--qf-color-warning-bg);
+}
+
+.qf-status-badge--error {
+  color: var(--qf-color-error);
+  border-color: var(--qf-color-error-border);
+  background: var(--qf-color-error-bg);
+}
+
+.qf-status-badge--info {
+  color: var(--qf-color-info);
+  border-color: var(--qf-color-info-border);
+  background: var(--qf-color-info-bg);
+}
+
+.qf-status-badge--neutral {
+  color: var(--qf-color-text-muted);
+  border-color: var(--qf-color-border);
+  background: var(--qf-color-surface-muted);
+}
+
+.qf-responsive-grid {
+  display: grid;
+  grid-template-columns: var(--qf-grid-cards);
+  gap: var(--qf-space-4);
+}
