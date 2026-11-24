@@ -5,9 +5,11 @@ type ValidationOptions = {
   now?: Date;
 };
 
+type RequiredBookingFormField = Exclude<keyof BookingFormInput, 'description'>;
+
 const PHONE_PATTERN = /^[\d\s+()-]+$/;
 
-const REQUIRED_FIELD_MESSAGES: Record<keyof BookingFormInput, string> = {
+const REQUIRED_FIELD_MESSAGES: Record<RequiredBookingFormField, string> = {
   service: 'Choose a service.',
   name: 'Enter your name.',
   phone: 'Enter your phone number.',
@@ -40,7 +42,7 @@ function addRequiredFieldErrors(
   errors: ValidationError[],
 ) {
   Object.entries(REQUIRED_FIELD_MESSAGES).forEach(([field, message]) => {
-    const bookingField = field as keyof BookingFormInput;
+    const bookingField = field as RequiredBookingFormField;
 
     if (input[bookingField] === '') {
       errors.push({ field: bookingField, message });
