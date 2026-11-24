@@ -1,7 +1,8 @@
 import type { ReactElement } from 'react';
-import { Link, Navigate, useRoutes, type RouteObject } from 'react-router-dom';
+import { Link, useRoutes, type RouteObject } from 'react-router-dom';
 
 import AppShell from '../layout/AppShell';
+import RoleGuard from './RoleGuard';
 
 export type QuickFixRole = 'customer' | 'admin';
 
@@ -26,20 +27,19 @@ function getRouteElement(
   element: ReactElement,
   rule: RouteAccessRule,
   options: RouteGuardOptions,
+  allowRoleSelection = false,
 ) {
-  const fallbackPath = options.fallbackPath ?? '/';
-  const hasRoleAccess = (
-    options.currentRole === undefined
-    || rule.allowedRoles === undefined
-    || rule.allowedRoles.includes(options.currentRole)
+  return (
+    <RoleGuard
+      rule={rule}
+      currentRole={options.currentRole}
+      canAccess={options.canAccess}
+      fallbackPath={options.fallbackPath}
+      allowRoleSelection={allowRoleSelection}
+    >
+      {element}
+    </RoleGuard>
   );
-  const hasCustomAccess = options.canAccess?.(rule) ?? true;
-
-  if (!hasRoleAccess || !hasCustomAccess) {
-    return <Navigate to={fallbackPath} replace />;
-  }
-
-  return element;
 }
 
 function createAppRoutes(options: RouteGuardOptions): RouteObject[] {
@@ -52,8 +52,9 @@ function createAppRoutes(options: RouteGuardOptions): RouteObject[] {
           index: true,
           element: getRouteElement(
             <HomePlaceholder />,
-            { path: '/', allowedRoles: ['customer', 'admin'] },
+            { path: '/', allowedRoles: ['customer'] },
             options,
+            true,
           ),
         },
         {
@@ -103,8 +104,8 @@ function HomePlaceholder() {
           <Link className="button primary" to="/book">
             Book service
           </Link>
-          <Link className="button secondary" to="/admin">
-            Admin view
+          <Link className="button secondary" to="/my-bookings">
+            My bookings
           </Link>
         </div>
       </div>
