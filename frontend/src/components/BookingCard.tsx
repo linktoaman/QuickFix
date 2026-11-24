@@ -1,9 +1,12 @@
+import { canCustomerCancel } from '../domain/booking';
 import type { Booking } from '../types/booking';
+import Button from './ui/Button';
 import Card from './ui/Card';
 import StatusBadge from './ui/StatusBadge';
 
 type BookingCardProps = {
   booking: Booking;
+  onCancel?: (bookingId: string) => void;
 };
 
 const dateFormatter = new Intl.DateTimeFormat(undefined, {
@@ -17,12 +20,18 @@ const timeFormatter = new Intl.DateTimeFormat(undefined, {
   minute: '2-digit',
 });
 
-function BookingCard({ booking }: BookingCardProps) {
+function BookingCard({ booking, onCancel }: BookingCardProps) {
   const appointmentLabel = formatAppointment(
     booking.appointmentDate,
     booking.appointmentTime,
   );
   const description = booking.description ?? 'No description provided';
+  const canCancel = onCancel !== undefined && canCustomerCancel(booking.status);
+  const cancellationHint = getCancellationHint(booking.status);
+
+  function handleCancel() {
+    onCancel?.(booking.id);
+  }
 
   return (
     <Card className="booking-card" elevated>
@@ -56,6 +65,22 @@ function BookingCard({ booking }: BookingCardProps) {
           <dd>{description}</dd>
         </div>
       </dl>
+
+      {canCancel ? (
+        <div>
+          <Button
+            aria-label={`Cancel ${booking.serviceName} booking`}
+            onClick={handleCancel}
+            variant="secondary"
+          >
+            Cancel booking
+          </Button>
+        </div>
+      ) : null}
+
+      {!canCancel && cancellationHint !== null ? (
+        <p className="qf-field__hint">{cancellationHint}</p>
+      ) : null}
     </Card>
   );
 }
@@ -113,6 +138,18 @@ function isValidDateParts(
   return date.getFullYear() === year
     && date.getMonth() === month - 1
     && date.getDate() === day;
+}
+
+function getCancellationHint(status: Booking['status']) {
+  if (status === 'Completed') {
+    return 'Completed bookings are closed and cannot be cancelled.';
+  }
+
+  if (status === 'Cancelled') {
+    return 'This booking has already been cancelled.';
+  }
+
+  return null;
 }
 
 export default BookingCard;
