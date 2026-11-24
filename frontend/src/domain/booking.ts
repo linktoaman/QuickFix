@@ -42,6 +42,10 @@ export function getServiceById(serviceId: string): ServiceCatalogItem | null {
   return SERVICE_CATALOG.find((service) => service.id === serviceId) ?? null;
 }
 
+export function canCustomerCancel(status: BookingStatus): boolean {
+  return status === 'Pending' || status === 'Confirmed';
+}
+
 export function normalizeBookingFormInput(input: BookingFormInput): BookingFormInput {
   const description = input.description?.trim();
 

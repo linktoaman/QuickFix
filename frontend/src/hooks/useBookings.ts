@@ -1,8 +1,8 @@
 import { useContext } from 'react';
 
-import { BookingContext } from '../state/bookingContext';
+import { BookingContext, type BookingContextValue } from '../state/bookingContext';
 
-export function useBookings() {
+export function useBookings(): BookingContextValue {
   const bookingContext = useContext(BookingContext);
 
   if (bookingContext === null) {
