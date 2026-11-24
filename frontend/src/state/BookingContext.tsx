@@ -6,9 +6,11 @@ import {
   getStatusCounts as getBookingStatusCounts,
   isBookingStatus,
 } from '../domain/booking';
+import { createSeedBookings } from '../data/seedBookings';
 import { validateBookingInput } from '../domain/validation';
 import useRole from '../hooks/useRole';
 import {
+  hasBookingData,
   readStoredBookings,
   writeStoredBookings,
 } from '../storage/localStorageAdapter';
@@ -40,6 +42,26 @@ export function BookingProvider({ children }: BookingProviderProps) {
   const [storageError, setStorageError] = useState<string | null>(null);
 
   useEffect(() => {
+    const bookingDataPresence = hasBookingData();
+
+    if (!bookingDataPresence.ok) {
+      setStorageError(bookingDataPresence.error.message);
+      return;
+    }
+
+    if (!bookingDataPresence.value) {
+      const seedResult = writeStoredBookings(createSeedBookings());
+
+      if (!seedResult.ok) {
+        setStorageError(seedResult.error);
+        return;
+      }
+
+      setBookings(seedResult.value);
+      setStorageError(null);
+      return;
+    }
+
     const storedBookings = readStoredBookings();
 
     if (!storedBookings.ok) {
