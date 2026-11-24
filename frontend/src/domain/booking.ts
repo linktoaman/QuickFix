@@ -43,6 +43,8 @@ export function getServiceById(serviceId: string): ServiceCatalogItem | null {
 }
 
 export function normalizeBookingFormInput(input: BookingFormInput): BookingFormInput {
+  const description = input.description?.trim();
+
   return {
     service: input.service.trim(),
     name: input.name.trim(),
@@ -50,6 +52,7 @@ export function normalizeBookingFormInput(input: BookingFormInput): BookingFormI
     address: input.address.trim(),
     date: input.date.trim(),
     time: input.time.trim(),
+    ...(description !== undefined ? { description } : {}),
   };
 }
 
@@ -61,7 +64,7 @@ export function createBooking(command: CreateBookingCommand): Booking {
     throw new Error('Cannot create a booking for an unknown service.');
   }
 
-  return {
+  const booking: Booking = {
     id: command.id,
     customerId: command.customerId,
     serviceId: service.id,
@@ -75,4 +78,13 @@ export function createBooking(command: CreateBookingCommand): Booking {
     createdAt: command.createdAt,
     updatedAt: command.createdAt,
   };
+
+  if (normalizedInput.description !== undefined && normalizedInput.description !== '') {
+    return {
+      ...booking,
+      description: normalizedInput.description,
+    };
+  }
+
+  return booking;
 }

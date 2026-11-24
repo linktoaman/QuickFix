@@ -15,6 +15,7 @@ export type BookingFormInput = {
   address: string;
   date: string;
   time: string;
+  description?: string;
 };
 
 export type BookingFormField = keyof BookingFormInput;
@@ -40,6 +41,7 @@ export type Booking = {
   address: string;
   appointmentDate: string;
   appointmentTime: string;
+  description?: string;
   status: BookingStatus;
   createdAt: string;
   updatedAt: string;
