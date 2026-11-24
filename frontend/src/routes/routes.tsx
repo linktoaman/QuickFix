@@ -1,6 +1,7 @@
 import type { ReactElement } from 'react';
 import { useRoutes, type RouteObject } from 'react-router-dom';
 
+import AdminDashboard from '../features/admin/AdminDashboard';
 import BookingPage from '../features/customer/BookingPage';
 import HomePage from '../features/customer/HomePage';
 import MyBookingsPage from '../features/customer/MyBookingsPage';
@@ -73,7 +74,7 @@ function createAppRoutes(options: RouteGuardOptions): RouteObject[] {
         {
           path: 'admin',
           element: getRouteElement(
-            <AdminPlaceholder />,
+            <AdminDashboard />,
             { path: '/admin', allowedRoles: ['admin'] },
             options,
           ),
@@ -85,16 +86,6 @@ function createAppRoutes(options: RouteGuardOptions): RouteObject[] {
 
 function AppRoutes(options: RouteGuardOptions) {
   return useRoutes(createAppRoutes(options));
-}
-
-function AdminPlaceholder() {
-  return (
-    <section className="page-panel" aria-labelledby="admin-title">
-      <p className="eyebrow">Operations workspace</p>
-      <h1 id="admin-title">Admin Dashboard</h1>
-      <p>Admin summaries will appear after local booking state is added.</p>
-    </section>
-  );
 }
 
 export default AppRoutes;
