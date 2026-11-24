@@ -27,6 +27,24 @@ type BookingProviderProps = {
   children: ReactNode;
 };
 
+type BookingMutationResult<T> = {
+  ok: true;
+  value: T;
+} | {
+  ok: false;
+  error: string;
+  cause: 'operation' | 'storage';
+};
+
+type BookingMutation<T> = {
+  ok: true;
+  bookings: Booking[];
+  value: T;
+} | {
+  ok: false;
+  error: string;
+};
+
 const BOOKING_CREATE_ERROR = 'We could not save this booking. Please try again.';
 const BOOKING_CANCEL_ERROR = 'We could not cancel this booking. Please try again.';
 const BOOKING_CANCEL_NOT_ALLOWED_ERROR = 'This booking cannot be cancelled.';
@@ -73,6 +91,56 @@ export function BookingProvider({ children }: BookingProviderProps) {
     setStorageError(null);
   }, []);
 
+  function persistBookingMutation<T>(
+    mutateBookings: (currentBookings: Booking[]) => BookingMutation<T>,
+  ): BookingMutationResult<T> {
+    const currentBookings = readStoredBookings();
+
+    if (!currentBookings.ok) {
+      setStorageError(currentBookings.error);
+
+      return {
+        ok: false,
+        error: currentBookings.error,
+        cause: 'storage',
+      };
+    }
+
+    const mutation = mutateBookings(dedupeBookingsById(currentBookings.value));
+
+    if (!mutation.ok) {
+      setStorageError(null);
+
+      return {
+        ok: false,
+        error: mutation.error,
+        cause: 'operation',
+      };
+    }
+
+    const storageResult = writeStoredBookings(mutation.bookings);
+
+    if (!storageResult.ok) {
+      setStorageError(storageResult.error);
+
+      return {
+        ok: false,
+        error: storageResult.error,
+        cause: 'storage',
+      };
+    }
+
+    const persistedBookings = dedupeBookingsById(storageResult.value);
+
+    setBookings(persistedBookings);
+    setStorageError(null);
+
+    return {
+      ok: true,
+      value: mutation.value,
+    };
+  }
+
   function createBooking(input: BookingFormInput): CreateBookingResult {
     if (selectedCustomerId === null) {
       return {
@@ -95,35 +163,22 @@ export function BookingProvider({ children }: BookingProviderProps) {
       customerId: selectedCustomerId,
       createdAt,
     });
-    const currentBookings = readStoredBookings();
+    const mutationResult = persistBookingMutation((currentBookings) => ({
+      ok: true,
+      bookings: upsertBookingById(currentBookings, booking),
+      value: booking,
+    }));
 
-    if (!currentBookings.ok) {
-      setStorageError(currentBookings.error);
-
+    if (!mutationResult.ok) {
       return {
         ok: false,
         error: BOOKING_CREATE_ERROR,
       };
     }
-
-    const nextBookings = [...currentBookings.value, booking];
-    const storageResult = writeStoredBookings(nextBookings);
-
-    if (!storageResult.ok) {
-      setStorageError(storageResult.error);
-
-      return {
-        ok: false,
-        error: BOOKING_CREATE_ERROR,
-      };
-    }
-
-    setBookings(storageResult.value);
-    setStorageError(null);
 
     return {
       ok: true,
-      booking,
+      booking: mutationResult.value,
     };
   }
 
@@ -131,57 +186,48 @@ export function BookingProvider({ children }: BookingProviderProps) {
     bookingId: string,
     customerId: string,
   ): CancelBookingResult {
-    const currentBookings = readStoredBookings();
+    const updatedAt = new Date().toISOString();
+    const mutationResult = persistBookingMutation((currentBookings) => {
+      const storedBooking = currentBookings.find(
+        (booking) => booking.id === bookingId,
+      );
 
-    if (!currentBookings.ok) {
-      setStorageError(currentBookings.error);
+      if (
+        storedBooking === undefined
+        || storedBooking.customerId !== customerId
+        || !canCustomerCancel(storedBooking.status)
+      ) {
+        return {
+          ok: false,
+          error: BOOKING_CANCEL_NOT_ALLOWED_ERROR,
+        };
+      }
+
+      const cancelledBooking: Booking = {
+        ...storedBooking,
+        status: 'Cancelled',
+        updatedAt,
+      };
 
       return {
-        ok: false,
-        error: BOOKING_CANCEL_ERROR,
+        ok: true,
+        bookings: upsertBookingById(currentBookings, cancelledBooking),
+        value: cancelledBooking,
       };
-    }
+    });
 
-    const bookingToCancel = currentBookings.value.find(
-      (booking) => booking.id === bookingId,
-    );
-
-    if (
-      bookingToCancel === undefined
-      || bookingToCancel.customerId !== customerId
-      || !canCustomerCancel(bookingToCancel.status)
-    ) {
+    if (!mutationResult.ok) {
       return {
         ok: false,
-        error: BOOKING_CANCEL_NOT_ALLOWED_ERROR,
+        error: mutationResult.cause === 'storage'
+          ? BOOKING_CANCEL_ERROR
+          : mutationResult.error,
       };
     }
-
-    const cancelledBooking: Booking = {
-      ...bookingToCancel,
-      status: 'Cancelled',
-      updatedAt: new Date().toISOString(),
-    };
-    const nextBookings = currentBookings.value.map((booking) => (
-      booking.id === bookingId ? cancelledBooking : booking
-    ));
-    const storageResult = writeStoredBookings(nextBookings);
-
-    if (!storageResult.ok) {
-      setStorageError(storageResult.error);
-
-      return {
-        ok: false,
-        error: BOOKING_CANCEL_ERROR,
-      };
-    }
-
-    setBookings(storageResult.value);
-    setStorageError(null);
 
     return {
       ok: true,
-      booking: cancelledBooking,
+      booking: mutationResult.value,
     };
   }
 
@@ -196,53 +242,44 @@ export function BookingProvider({ children }: BookingProviderProps) {
       };
     }
 
-    const currentBookings = readStoredBookings();
+    const updatedAt = new Date().toISOString();
+    const mutationResult = persistBookingMutation((currentBookings) => {
+      const storedBooking = currentBookings.find(
+        (booking) => booking.id === bookingId,
+      );
 
-    if (!currentBookings.ok) {
-      setStorageError(currentBookings.error);
+      if (storedBooking === undefined) {
+        return {
+          ok: false,
+          error: BOOKING_STATUS_NOT_FOUND_ERROR,
+        };
+      }
+
+      const updatedBooking: Booking = {
+        ...storedBooking,
+        status,
+        updatedAt,
+      };
 
       return {
-        ok: false,
-        error: BOOKING_STATUS_UPDATE_ERROR,
+        ok: true,
+        bookings: upsertBookingById(currentBookings, updatedBooking),
+        value: updatedBooking,
       };
-    }
+    });
 
-    const bookingToUpdate = currentBookings.value.find(
-      (booking) => booking.id === bookingId,
-    );
-
-    if (bookingToUpdate === undefined) {
+    if (!mutationResult.ok) {
       return {
         ok: false,
-        error: BOOKING_STATUS_NOT_FOUND_ERROR,
+        error: mutationResult.cause === 'storage'
+          ? BOOKING_STATUS_UPDATE_ERROR
+          : mutationResult.error,
       };
     }
-
-    const updatedBooking: Booking = {
-      ...bookingToUpdate,
-      status,
-      updatedAt: new Date().toISOString(),
-    };
-    const nextBookings = currentBookings.value.map((booking) => (
-      booking.id === bookingId ? updatedBooking : booking
-    ));
-    const storageResult = writeStoredBookings(nextBookings);
-
-    if (!storageResult.ok) {
-      setStorageError(storageResult.error);
-
-      return {
-        ok: false,
-        error: BOOKING_STATUS_UPDATE_ERROR,
-      };
-    }
-
-    setBookings(storageResult.value);
-    setStorageError(null);
 
     return {
       ok: true,
-      booking: updatedBooking,
+      booking: mutationResult.value,
     };
   }
 
@@ -285,4 +322,26 @@ function createBookingId() {
   const randomSuffix = Math.random().toString(36).slice(2);
 
   return `booking-${timestamp}-${randomSuffix}`;
+}
+
+function upsertBookingById(
+  bookings: readonly Booking[],
+  nextBooking: Booking,
+): Booking[] {
+  const bookingWasReplaced = bookings.some(
+    (booking) => booking.id === nextBooking.id,
+  );
+  const nextBookings = bookings.map((booking) => (
+    booking.id === nextBooking.id ? nextBooking : booking
+  ));
+
+  return bookingWasReplaced
+    ? nextBookings
+    : [...nextBookings, nextBooking];
+}
+
+function dedupeBookingsById(bookings: readonly Booking[]): Booking[] {
+  return bookings.reduce<Booking[]>((uniqueBookings, booking) => (
+    upsertBookingById(uniqueBookings, booking)
+  ), []);
 }
