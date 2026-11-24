@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 
+import RoleSelection from '../features/role/RoleSelection';
 import PrimaryNav from './PrimaryNav';
 
 function TopBar() {
@@ -12,6 +13,7 @@ function TopBar() {
         <span>QuickFix</span>
       </Link>
       <div className="navigation-container">
+        <RoleSelection />
         <PrimaryNav />
       </div>
     </header>
