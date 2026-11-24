@@ -1,6 +1,8 @@
 import type { ReactElement } from 'react';
 import { Link, useRoutes, type RouteObject } from 'react-router-dom';
 
+import { SERVICE_CATALOG } from '../domain/booking';
+import BookingPage from '../features/customer/BookingPage';
 import AppShell from '../layout/AppShell';
 import RoleGuard from './RoleGuard';
 
@@ -16,12 +18,6 @@ export type RouteGuardOptions = {
   canAccess?: (rule: RouteAccessRule) => boolean;
   fallbackPath?: string;
 };
-
-const serviceHighlights = [
-  'Plumbing',
-  'Electrical',
-  'Appliance repair',
-];
 
 function getRouteElement(
   element: ReactElement,
@@ -60,7 +56,7 @@ function createAppRoutes(options: RouteGuardOptions): RouteObject[] {
         {
           path: 'book',
           element: getRouteElement(
-            <BookPlaceholder />,
+            <BookingPage />,
             { path: '/book', allowedRoles: ['customer'] },
             options,
           ),
@@ -111,27 +107,20 @@ function HomePlaceholder() {
       </div>
 
       <div className="service-panel" aria-label="Service categories">
-        {serviceHighlights.map((service) => (
-          <article className="service-card" key={service}>
+        {SERVICE_CATALOG.map((service) => (
+          <article className="service-card" key={service.id}>
             <span aria-hidden="true" />
-            <h2>{service}</h2>
-            <p>Ready for the booking flow in the next feature slice.</p>
+            <h2>{service.name}</h2>
+            <p>{service.description}</p>
+            <Link
+              className="service-card__link"
+              to={`/book?service=${service.id}`}
+            >
+              Schedule this service
+            </Link>
           </article>
         ))}
       </div>
-    </section>
-  );
-}
-
-function BookPlaceholder() {
-  return (
-    <section className="page-panel" aria-labelledby="book-title">
-      <p className="eyebrow">Customer workspace</p>
-      <h1 id="book-title">Book a Service</h1>
-      <p>
-        Booking form controls will appear here when the customer booking flow is
-        connected to local browser storage.
-      </p>
     </section>
   );
 }
