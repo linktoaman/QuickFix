@@ -124,7 +124,10 @@ function BookingForm({ initialService }: BookingFormProps) {
   function handleClearForm() {
     setFormInput({ ...emptyFormInput });
     setFieldErrors({});
-    setMessage(null);
+    setMessage({
+      text: 'Booking form cleared.',
+      tone: 'success',
+    });
   }
 
   return (
