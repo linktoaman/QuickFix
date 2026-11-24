@@ -16,6 +16,8 @@ export const BOOKING_STATUSES: readonly BookingStatus[] = [
 
 export const DEFAULT_BOOKING_STATUS: BookingStatus = 'Pending';
 
+export type BookingStatusCounts = Record<'Total' | BookingStatus, number>;
+
 export const SERVICE_CATALOG: readonly ServiceCatalogItem[] = [
   {
     id: 'plumbing',
@@ -42,8 +44,30 @@ export function getServiceById(serviceId: string): ServiceCatalogItem | null {
   return SERVICE_CATALOG.find((service) => service.id === serviceId) ?? null;
 }
 
+export function isBookingStatus(value: unknown): value is BookingStatus {
+  return typeof value === 'string'
+    && BOOKING_STATUSES.includes(value as BookingStatus);
+}
+
 export function canCustomerCancel(status: BookingStatus): boolean {
   return status === 'Pending' || status === 'Confirmed';
+}
+
+export function getStatusCounts(bookings: readonly Booking[]): BookingStatusCounts {
+  return bookings.reduce<BookingStatusCounts>(
+    (counts, booking) => ({
+      ...counts,
+      Total: counts.Total + 1,
+      [booking.status]: counts[booking.status] + 1,
+    }),
+    {
+      Total: 0,
+      Pending: 0,
+      Confirmed: 0,
+      Completed: 0,
+      Cancelled: 0,
+    },
+  );
 }
 
 export function normalizeBookingFormInput(input: BookingFormInput): BookingFormInput {
