@@ -4,8 +4,8 @@ import useRole from '../hooks/useRole';
 import type { Role } from '../state/RoleContext';
 
 const customerNavItems = [
-  { label: 'Services', to: '/', end: true },
-  { label: 'Book', to: '/book', end: false },
+  { label: 'Home', to: '/', end: true },
+  { label: 'Book Service', to: '/book', end: false },
   { label: 'My Bookings', to: '/my-bookings', end: false },
 ];
 
