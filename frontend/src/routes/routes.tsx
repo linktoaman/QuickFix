@@ -3,6 +3,7 @@ import { useRoutes, type RouteObject } from 'react-router-dom';
 
 import BookingPage from '../features/customer/BookingPage';
 import HomePage from '../features/customer/HomePage';
+import MyBookingsPage from '../features/customer/MyBookingsPage';
 import AppShell from '../layout/AppShell';
 import RoleGuard from './RoleGuard';
 
@@ -64,7 +65,7 @@ function createAppRoutes(options: RouteGuardOptions): RouteObject[] {
         {
           path: 'my-bookings',
           element: getRouteElement(
-            <MyBookingsPlaceholder />,
+            <MyBookingsPage />,
             { path: '/my-bookings', allowedRoles: ['customer'] },
             options,
           ),
@@ -84,16 +85,6 @@ function createAppRoutes(options: RouteGuardOptions): RouteObject[] {
 
 function AppRoutes(options: RouteGuardOptions) {
   return useRoutes(createAppRoutes(options));
-}
-
-function MyBookingsPlaceholder() {
-  return (
-    <section className="page-panel" aria-labelledby="my-bookings-title">
-      <p className="eyebrow">Customer workspace</p>
-      <h1 id="my-bookings-title">My Bookings</h1>
-      <p>No customer booking data is stored in this scaffold.</p>
-    </section>
-  );
 }
 
 function AdminPlaceholder() {
